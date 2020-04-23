@@ -1,25 +1,30 @@
-`timescale 1ns / 1ps
-
-module sevenSegmentDecoder(bcd,seg);
-	input [3:0] bcd;
-	output reg [6:0]seg;
+module decoder#(parameter n = 4)(
+	input[n-1:0] ilines,
+	output[2**n-1:0] Tsig
+	);
 	
-	always@(bcd)
-		begin
-			case(bcd)
-				0:seg=7'b1111110;
-				1:seg=7'b0110000;
-				2:seg=7'b1101101;
-				3:seg=7'b1111001;
-				4:seg=7'b0110011;
-				5:seg=7'b1011011;
-				6:seg=7'b1011111;
-				7:seg=7'b1110000;
-				8:seg=7'b1111111;
-				9:seg=7'b1111011;
-				default:seg=7'b1001111;
-			endcase
-		end
+	reg[2**n-1 : 0] r_sig;
 
+	always@(*)
+		case (ilines)
+			4'h0: r_sig = 16'b0000000000000001;
+			4'h1: r_sig = 16'b0000000000000010;
+			4'h2: r_sig = 16'b0000000000000100;
+			4'h3: r_sig = 16'b0000000000001000;
+			4'h4: r_sig = 16'b0000000000010000;
+			4'h5: r_sig = 16'b0000000000100000;
+			4'h6: r_sig = 16'b0000000001000000;
+			4'h7: r_sig = 16'b0000000010000000;
+			4'h8: r_sig = 16'b0000000100000000;
+			4'h9: r_sig = 16'b0000001000000000;
+			4'ha: r_sig = 16'b0000010000000000;
+			4'hb: r_sig = 16'b0000100000000000;
+			4'hc: r_sig = 16'b0001000000000000;
+			4'hd: r_sig = 16'b0010000000000000;
+			4'he: r_sig = 16'b0100000000000000;
+			4'hf: r_sig = 16'b1000000000000000;
+		endcase
+
+	assign Tsig = r_sig;
 
 endmodule
