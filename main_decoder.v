@@ -1,35 +1,29 @@
 `include "decoder.v"
-`timescale 1ns / 1ps
+
+module decoder_tb();
+
+	reg[3:0] i_reg;
+	wire[15:0] o_reg;
+
+	reg clock;
+
+	always #10 clock = ~clock;
+
+	always@(posedge clock) i_reg = i_reg + 1;
+
+	decoder test(.ilines(i_reg), .Tsig(o_reg));
 
 
-module sevenSegmentDecoder_tb();
-
-	// Inputs
-	reg [3:0] bcd;
-
-	// Outputs
-	wire [6:0] seg;
-
-	// Instantiate the Unit Under Test (UUT)
-	sevenSegmentDecoder uut (
-		.bcd(bcd), 
-		.seg(seg)
-	);
-
-	initial begin
+	initial
+	begin
+		clock = 0;
+		i_reg = 0;
+		$display("time \t\t clk \t input \t output");
+		$monitor("%4d ns \t %b \t %b \t %b",$time, clock, i_reg, o_reg);
 	
-		$monitor("Value of BCD=%d,SEG=%b",bcd,seg);
-		bcd = 4'd1;
-		#10
-	   bcd = 4'd5;
-		#10
-		bcd = 4'd9;
-		#10
-		bcd = 4'd0;
-		#10
-		bcd = 4'd15;
-
-		
+		#320 $finish;
 	end
-      
+
+	
+
 endmodule
